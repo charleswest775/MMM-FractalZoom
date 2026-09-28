@@ -13,8 +13,8 @@
  * shut down when the dive is over.
  */
 (function (root) {
-	const ZM = root.ChaosZoomMath || require("./zoom-math.js");
-	const sci = (root.ChaosCommon || require("./common.js")).sci;
+	const ZM = root.FractalZoomMath || require("./zoom-math.js");
+	const sci = (root.FractalCommon || require("./common.js")).sci;
 
 	const LOOKAHEAD = 2;      // keyframes rendered beyond the two on screen
 	const FADE_IN = 1.5;      // seconds
@@ -224,11 +224,11 @@
 					mandel
 						? "z<sub>n+1</sub> = z<sub>n</sub>² + c,   z<sub>0</sub> = 0,   c = the point on screen"
 						: `z<sub>n+1</sub> = z<sub>n</sub>² + c,   c = ${cplx(t.c, 3)},   z<sub>0</sub> = the point on screen`,
-					"<span class=\"chaos-note\">black: z stays bounded for ever. Elsewhere it escapes to infinity, and the colour tells how fast: " +
+					"<span class=\"fractal-note\">black: z stays bounded for ever. Elsewhere it escapes to infinity, and the colour tells how fast: " +
 						"ν = n + 1 − log₂ log<sub>R</sub>|z<sub>n</sub>|</span>",
 					mandel
-						? `<span class="chaos-note">heading for c = ${cplx(t.center, 16)}, where the orbit of 0 lands on a repelling cycle of period ${t.p} after ${t.m} steps (a Misiurewicz point): ${repeats}</span>`
-						: `<span class="chaos-note">heading for the fixed point z = ${cplx(t.center, 16)}, where the set's arms meet: ${repeats}</span>`
+						? `<span class="fractal-note">heading for c = ${cplx(t.center, 16)}, where the orbit of 0 lands on a repelling cycle of period ${t.p} after ${t.m} steps (a Misiurewicz point): ${repeats}</span>`
+						: `<span class="fractal-note">heading for the fixed point z = ${cplx(t.center, 16)}, where the set's arms meet: ${repeats}</span>`
 				]
 			};
 		}
@@ -248,7 +248,7 @@
 	}
 
 	Zoom.WorkerPool = WorkerPool;
-	root.ChaosSimulations = root.ChaosSimulations || {};
-	root.ChaosSimulations.zoom = Zoom;
+	root.FractalSimulations = root.FractalSimulations || {};
+	root.FractalSimulations.zoom = Zoom;
 	if (typeof module !== "undefined") module.exports = { Zoom };
 })(typeof window !== "undefined" ? window : globalThis);

@@ -218,6 +218,6 @@
 
 	const ZoomMath = { BAILOUT, escape, orbit, render, percentile, inMainBulbs, misiurewicz, landingCycle, juliaAlpha,
 		TARGETS, resolve, maxDepth, colorize };
-	root.ChaosZoomMath = ZoomMath;
+	root.FractalZoomMath = ZoomMath;
 	if (typeof module !== "undefined") module.exports = ZoomMath;
 })(typeof window !== "undefined" ? window : globalThis);

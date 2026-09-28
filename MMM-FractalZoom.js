@@ -1,16 +1,16 @@
-/* MagicMirror² module: MMM-ChaosTheory
- * Animated chaos-theory simulations drawn on a 2D canvas, with the math underneath.
+/* MagicMirror² module: MMM-FractalZoom
+ * An infinite zoom into the Mandelbrot set and Julia sets, keyframes rendered by web workers.
  * Designed for low-power displays (Raspberry Pi 3, no GPU): frame-rate capped,
  * and the animation stops entirely while the module is hidden (e.g. by MMM-pages).
  */
-Module.register("MMM-ChaosTheory", {
+Module.register("MMM-FractalZoom", {
 	defaults: {
-		// shown in turn; each keyed in window.ChaosSimulations
-		simulations: ["lorenz", "pendulums", "basins", "logistic", "icons", "threeBody", "billiards", "rule30"],
-		cycleSeconds: 60,  // move to the next simulation this often (and each time the module is shown)
-		width: 900,        // canvas size in CSS pixels
-		height: 900,
-		fps: 20,           // frame cap; lower = less CPU
+		// shown in turn; each keyed in window.FractalSimulations
+		simulations: ["zoom"],
+		cycleSeconds: 600, // a new one each time the module is shown, or this often
+		width: 700,        // canvas size in CSS pixels
+		height: 700,
+		fps: 12,           // frame cap; lower = less CPU
 		showMath: true,    // equations and live numbers under the canvas
 		turns: null,       // e.g. { of: 3, at: 0 }: show only on every third showing, from the first,
 		                   // so modules sharing a page can take turns (see README)
@@ -21,42 +21,13 @@ Module.register("MMM-ChaosTheory", {
 	getScripts () {
 		return [
 			"simulations/common.js",
-			"simulations/double-pendulum.js",
-			"simulations/pendulums.js",
-			"simulations/lorenz.js",
-			"simulations/magnetic-pendulum.js",
-			"simulations/logistic.js",
-			"simulations/icons.js",
-			"data/elements.js",
-			"data/element-history.js",
-			"simulations/atom.js",
 			"simulations/zoom-math.js",
-			"simulations/zoom.js",
-			"simulations/photos.js",
-			"simulations/sacred-geometry.js",
-			"simulations/sacred.js",
-			"simulations/ephemeris.js",
-			"simulations/orbits.js",
-			"simulations/plate.js",
-			"data/chladni-modes.js",
-			"simulations/chladni.js",
-			"simulations/orbital.js",
-			"simulations/hat.js",
-			"simulations/tilings.js",
-			"simulations/snow-model.js",
-			"simulations/snow.js",
-			"simulations/three-body.js",
-			"simulations/billiards.js",
-			"simulations/rule30.js",
-			"simulations/sky-math.js",
-			"data/stars.js",
-			"data/star-stories.js",
-			"simulations/sky.js"
+			"simulations/zoom.js"
 		].map((f) => this.file(f));
 	},
 
 	getStyles () {
-		return ["MMM-ChaosTheory.css"];
+		return ["MMM-FractalZoom.css"];
 	},
 
 	start () {
@@ -82,29 +53,29 @@ Module.register("MMM-ChaosTheory", {
 		// Build once; MagicMirror may call getDom again on updateDom.
 		if (!this.canvas) {
 			this.canvas = document.createElement("canvas");
-			this.canvas.className = "chaos-canvas";
+			this.canvas.className = "fractal-canvas";
 			this.canvas.width = this.config.width;
 			this.canvas.height = this.config.height;
 			this.ctx = this.canvas.getContext("2d", { alpha: false });
 
 			this.caption = document.createElement("div");
-			this.caption.className = "chaos-caption";
+			this.caption.className = "fractal-caption";
 			this.caption.style.width = `${this.config.width}px`;
 			this.titleEl = document.createElement("div");
-			this.titleEl.className = "chaos-title";
+			this.titleEl.className = "fractal-title";
 			this.mathEl = document.createElement("div");
-			this.mathEl.className = "chaos-math";
+			this.mathEl.className = "fractal-math";
 			this.readoutEl = document.createElement("div");
-			this.readoutEl.className = "chaos-readout";
+			this.readoutEl.className = "fractal-readout";
 			this.caption.append(this.titleEl, this.mathEl, this.readoutEl);
 			if (!this.config.showMath) this.caption.style.display = "none";
 
 			this.wrapper = document.createElement("div");
-			this.wrapper.className = "chaos-wrapper";
+			this.wrapper.className = "fractal-wrapper";
 			this.wrapper.append(this.canvas, this.caption);
 			if (this.config.statsPanel) {
 				this.panel = document.createElement("div");
-				this.panel.className = "chaos-stats";
+				this.panel.className = "fractal-stats";
 				this.panel.style.width = `${this.config.width}px`;
 				this.wrapper.append(this.panel);
 			}
@@ -165,7 +136,7 @@ Module.register("MMM-ChaosTheory", {
 	// what nextSim() would show next, without moving on
 	peek () {
 		const names = this.config.simulations;
-		return (window.ChaosSimulations || {})[names[(this.simIndex + 1) % names.length]];
+		return (window.FractalSimulations || {})[names[(this.simIndex + 1) % names.length]];
 	},
 
 	// Draw the prepared picture while hidden, once it has something to draw (a photo has to
@@ -179,7 +150,7 @@ Module.register("MMM-ChaosTheory", {
 
 	nextSim () {
 		const names = this.config.simulations;
-		const registry = window.ChaosSimulations || {};
+		const registry = window.FractalSimulations || {};
 		for (let tries = 0; tries < names.length; tries++) {
 			this.simIndex = (this.simIndex + 1) % names.length;
 			const Sim = registry[names[this.simIndex]];
@@ -195,7 +166,7 @@ Module.register("MMM-ChaosTheory", {
 		this.startedAt = performance.now();
 		this.lastReadout = 0;
 		const info = this.sim.info || Sim.info || {}; // per instance where the caption depends on it (atom)
-		this.titleEl.innerHTML = info.title ? `${info.title}<span class="chaos-subtitle">${info.subtitle || ""}</span>` : "";
+		this.titleEl.innerHTML = info.title ? `${info.title}<span class="fractal-subtitle">${info.subtitle || ""}</span>` : "";
 		this.mathEl.innerHTML = (info.equations || []).map((l) => `<div>${l}</div>`).join("");
 		this.readoutEl.innerHTML = this.readoutHtml = "";
 		this.clearCanvas(); // whatever the previous simulation left behind
@@ -219,13 +190,13 @@ Module.register("MMM-ChaosTheory", {
 		this.running = true;
 		clearTimeout(this.primer);
 		this.startedAt = performance.now(); // cycleSeconds counts time on screen
-		if (this.panel) this.sendSocketNotification("CHAOS_STATS_START", { interval: 2000, id: this.identifier });
+		if (this.panel) this.sendSocketNotification("STATS_START", { interval: 2000, id: this.identifier });
 		this.lastFrame = performance.now();
 		this.schedule();
 	},
 
 	pause () {
-		if (this.running && this.panel) this.sendSocketNotification("CHAOS_STATS_STOP", { id: this.identifier });
+		if (this.running && this.panel) this.sendSocketNotification("STATS_STOP", { id: this.identifier });
 		this.running = false;
 		clearTimeout(this.timer);
 		clearTimeout(this.primer);
@@ -280,7 +251,7 @@ Module.register("MMM-ChaosTheory", {
 	},
 
 	socketNotificationReceived (notification, stats) {
-		if (notification === "CHAOS_STATS" && this.panel && this.running) this.renderPanel(stats);
+		if (notification === "STATS" && this.panel && this.running) this.renderPanel(stats);
 	},
 
 	// One line, refreshed every 2 s by the node_helper: frames drawn, CPU as % of one core
