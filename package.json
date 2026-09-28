@@ -1,7 +1,7 @@
 {
   "name": "mmm-fractalzoom",
   "version": "1.0.0",
-  "description": "MagicMirror² module: animated fractal-theory simulations (Lorenz attractor, diverging pendulums, fractal basins, logistic map, symmetric icons, the three-body problem, chaotic billiards, rule 30), and pages of physics and mathematics: a Bohr-style atom and hydrogen's orbitals, a fractal zoom, sacred geometry, the planets' dance, Chladni figures, aperiodic and hyperbolic tilings, snow crystals, and tonight's sky.",
+  "description": "MagicMirror² module: an infinite zoom into the Mandelbrot set and Julia sets, towards points on their edges, rendered by web workers and drawn for a Raspberry Pi without a GPU.",
   "main": "MMM-FractalZoom.js",
   "scripts": {
     "test": "node --test"
