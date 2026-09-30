@@ -27,7 +27,7 @@ with its history (it was the `zoom` simulation of that module's fractal page).
 
 The shell (`MMM-FractalZoom.js`, `node_helper.js`'s stats panel, `dev/preview.html`) is shared in
 spirit with the sibling modules (MMM-ChaosTheory, MMM-Chladni, MMM-Atom, MMM-SacredGeometry,
-MMM-Tilings, MMM-PlanetsDance, MMM-SnowCrystal, MMM-NightSky, MMM-PhotoDeck): a fix there
+MMM-Tilings, MMM-PlanetsDance, MMM-SnowCrystal, MMM-NightSky, MMM-PhotoDeck, MMM-StandardMap, MMM-ChaoticWaterwheel, MMM-DoubleSlit, MMM-Sandpile, MMM-Harmonograph): a fix there
 probably belongs in the siblings too.
 
 On the mirror it shares the fractal page with MMM-Chladni, taking turns
